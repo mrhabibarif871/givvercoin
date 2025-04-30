@@ -1,4 +1,4 @@
 {
-  "mongoURI": "mongodb://127.0.0.1:27017/amarna",
-  "jwtSecret": "ddwqecsdcsdff#RWDsdcwec3"
+  "mongoURI": "mongodb+srv://mh8379899:EhLR4RNmKeQ1JlP9@cluster0.febzmwm.mongodb.net/givvercoin?retryWrites=true&w=majority",
+  "jwtSecret": "givvertokensecret"
 }
