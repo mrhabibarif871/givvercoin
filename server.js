@@ -1,39 +1,39 @@
-const express = require("express");
-const connectDB = require("./config/db");
-const path = require("path");
-const helmet = require("helmet");
-const CORS = require("cors");
-const test = require("./tests/phaser")
-const app = express();
+const express = require('express');
+const connectDB = require('./config/db');
+const path = require('path');
+const config = require('config');
+const TelegramBot = require('node-telegram-bot-api');
 
-// Connect Database
+// Load environment variables
+const mongoURI = config.get('mongoURI');
+const jwtSecret = config.get('jwtSecret');
+const token = '8172381970:AAGwpA28tmQIcq-1RlES3cSDGU4vXvIX7iw'; // Your bot token
+
+const bot = new TelegramBot(token, { polling: true });
+
+// Connect to MongoDB
 connectDB();
 
-// Init Middleware
-app.use(express.json({ extended: false }));
-app.use(helmet());
-app.use(CORS());
-// Define Routes
-app.use("/api/users", require("./routes/api/users"));
-app.use("/api/auth", require("./routes/api/auth"));
-app.use("/api/play", require("./routes/api/play"));
-app.use("/api/task", require("./routes/api/task"));
+const app = express();
+app.use(express.json());
 
-// Serve static assets in production
-if (process.env.NODE_ENV === "production") {
-  // Set static folder
-  app.use(express.static("client/build"));
+// Define your API routes here
+app.use('/api/users', require('./routes/api/users'));
+app.use('/api/profile', require('./routes/api/profile'));
+app.use('/api/auth', require('./routes/api/auth'));
 
-  app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
-  });
-}
+// Remove static frontend serving (since it's not needed)
+app.get('/', (req, res) => {
+  res.send('API is running. Telegram Bot backend is live!');
+});
 
-const PORT = process.env.PORT || 5000;
+// Telegram bot logic
+bot.onText(/\/start/, (msg) => {
+  const chatId = msg.chat.id;
+  bot.sendMessage(chatId, "Welcome to Givver Coin Bot!");
+});
 
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+// Add your other bot commands here...
 
-module.exports = app;
-
-//Testing server
-//test();
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => console.log(Server started on port ${PORT}));
